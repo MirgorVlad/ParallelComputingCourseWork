@@ -1,4 +1,4 @@
-package org.example;
+package org.example.index;
 
 import lombok.Data;
 import org.example.entity.Document;
@@ -7,19 +7,18 @@ import java.util.*;
 
 @Data
 public class InvertedIndex {
-    private Map<String, Set<Integer>> indexMap;
+    private Map<String, Set<Integer>> indexMap = new HashMap<>();
 
-    public InvertedIndex() {
-        this.indexMap = new HashMap<>();
-    }
-
-    public void buildIndex(List<Document> documentList) {
+    public boolean buildIndex(List<Document> documentList) {
         for (Document document : documentList) {
             String content = document.getContent();
             for (String word : content.split("\\s+")) {
-                indexMap.computeIfAbsent(word, k -> new HashSet<>()).add(document.getId());
+                synchronized (this) {
+                    indexMap.computeIfAbsent(word, k -> new HashSet<>()).add(document.getId());
+                }
             }
         }
+        return true;
     }
 
     public Map<String, Set<Integer>> searchQuery(String query) {
