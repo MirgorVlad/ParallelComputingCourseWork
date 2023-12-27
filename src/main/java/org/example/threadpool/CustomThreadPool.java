@@ -2,12 +2,14 @@ package org.example.threadpool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 public class CustomThreadPool {
     private final CustomQueue<FutureTask<?>> taskQueue;
     private final List<WorkerThread> threadList;
+    private final Random random = new Random();
 
     public CustomThreadPool(int poolSize) {
         this.taskQueue = new CustomQueue<>(poolSize);
@@ -43,6 +45,7 @@ public class CustomThreadPool {
             while (!isStopped) {
                 try {
                     FutureTask<?> task = taskQueue.remove();
+                    Thread.sleep((random.nextInt(20) + 10) * 1000);
                     task.run();
                 } catch (InterruptedException e) {
                     if (isStopped) {
