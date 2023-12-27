@@ -3,7 +3,10 @@ package org.example.index;
 import org.example.entity.Document;
 import org.example.threadpool.CustomThreadPool;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
@@ -25,17 +28,17 @@ public class ConcurrentInvertedIndex {
         List<FutureTask<?>> futureTaskList = new ArrayList<>();
         int step = documentList.size() / THREAD_COUNT;
         for (int i = 0; i < THREAD_COUNT; i++) {
-            List<Document> docList = i == THREAD_COUNT-1 ? documentList.subList(i * step, documentList.size())
+            List<Document> docList = i == THREAD_COUNT - 1 ? documentList.subList(i * step, documentList.size())
                     : documentList.subList(i * step, (i + 1) * step);
             futureTaskList.add(customThreadPool.execute(() -> invertedIndex.buildIndex(docList)));
         }
-        time = countTime(futureTaskList);
+        countTime(futureTaskList);
         return futureTaskList;
     }
 
-    private FutureTask<?> countTime(List<FutureTask<?>> futureTaskList) {
-        return customThreadPool.execute(() -> {
-            double start = System.currentTimeMillis();
+    private void countTime(List<FutureTask<?>> futureTaskList) {
+        time = new FutureTask<>(() -> {
+            long start = System.currentTimeMillis();
             System.out.println(start);
             futureTaskList.forEach(t -> {
                 try {
@@ -44,18 +47,20 @@ public class ConcurrentInvertedIndex {
                     throw new RuntimeException(e);
                 }
             });
-            double end = System.currentTimeMillis();
+            long end = System.currentTimeMillis();
             System.out.println(end);
-            return end - start;
+            return String.valueOf(end - start);
         });
+
+        new Thread(time).start();
     }
 
-    public Double getTime() throws ExecutionException, InterruptedException {
-        return (Double) time.get();
+    public String getTime() throws ExecutionException, InterruptedException {
+        return (String) time.get();
     }
 
     public Map<String, Set<Integer>> searchQuery(String query) {
-       return invertedIndex.searchQuery(query);
+        return invertedIndex.searchQuery(query);
     }
 
 }

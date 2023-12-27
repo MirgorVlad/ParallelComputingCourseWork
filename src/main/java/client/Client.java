@@ -68,7 +68,7 @@ public class Client {
                     System.out.println("Status: " + resultStatus + "%");
                 }
                 else if (line.equals("time")) {
-                    long resultStatus = in.readLong();
+                    String resultStatus = in.readUTF();
                     System.out.println("Time: " + resultStatus + "ms");
                 }
                 else if (line.equals("search")) {

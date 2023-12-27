@@ -57,9 +57,9 @@ class ClientThread extends Thread {
                     Map<String, Set<Integer>> stringSetMap = concurrentInvertedIndex.searchQuery(query);
                     dos.writeUTF(stringSetMap.toString());
                 } else if (received.equals("time")) {
-                    Double time = concurrentInvertedIndex.getTime();
+                    String time = concurrentInvertedIndex.getTime();
                     System.out.println("Time: " + time);
-                    dos.writeDouble(time);
+                    dos.writeUTF(time);
                 } else if (received.equals("exit")) {
                     dos.writeUTF("Close connection");
                     this.s.close();
