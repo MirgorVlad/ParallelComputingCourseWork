@@ -14,15 +14,9 @@ import java.util.concurrent.*;
  */
 public class Main
 {
-    public static void main( String[] args ) throws ExecutionException, InterruptedException {
+    public static void main( String[] args ) {
         ConcurrentInvertedIndex concurrentInvertedIndex = new ConcurrentInvertedIndex();
-        List<Document> documents = DocUtil.readDocuments("/home/thingsboard563/Private/documents/pos");
-        List<FutureTask<?>> futureTaskList = concurrentInvertedIndex.buildIndex(documents);
+        List<Document> documents = DocUtil.readDocuments("/home/thingsboard563/Private/documents");
 
-        for(FutureTask<?> task : futureTaskList){
-            task.get();
-        }
-
-        System.out.println(concurrentInvertedIndex.searchQuery("Vlad"));
     }
 }

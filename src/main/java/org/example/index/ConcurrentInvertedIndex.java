@@ -12,7 +12,7 @@ import java.util.concurrent.FutureTask;
 
 public class ConcurrentInvertedIndex {
 
-    private final int THREAD_COUNT = 4;
+    private final int THREAD_COUNT = 1;
     private final InvertedIndex invertedIndex;
     private final CustomThreadPool customThreadPool;
 
