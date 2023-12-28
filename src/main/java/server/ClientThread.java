@@ -18,18 +18,18 @@ class ClientThread extends Thread {
     private final DataInputStream dis;
     private final DataOutputStream dos;
     private final Socket s;
-    ConcurrentInvertedIndex concurrentInvertedIndex = new ConcurrentInvertedIndex();
-
-    public ClientThread(Socket s, DataInputStream dis, DataOutputStream dos) {
+    ConcurrentInvertedIndex concurrentInvertedIndex;
+    public ClientThread(Socket s, DataInputStream dis, DataOutputStream dos, ConcurrentInvertedIndex concurrentInvertedIndex) {
         this.s = s;
         this.dis = dis;
         this.dos = dos;
+        this.concurrentInvertedIndex = concurrentInvertedIndex;
     }
 
     @Override
     public void run() {
         String received;
-        List<FutureTask<?>> futureTaskList = new ArrayList<>();
+        List<FutureTask<?>> futureTaskList;
         while (true) {
             try {
                 dos.writeUTF("Enter command: ");
@@ -39,11 +39,12 @@ class ClientThread extends Thread {
                 if (received.equals("build")) {
                     String path = dis.readUTF();
                     System.out.println("Path: " + path);
-                    futureTaskList = concurrentInvertedIndex.buildIndex(DocUtil
+                    concurrentInvertedIndex.buildIndex(DocUtil
                             .readDocuments(path));
                     dos.write(1);
 
                 } else if (received.equals("status")) {
+                    futureTaskList = concurrentInvertedIndex.getFutureTaskList();
                     double count = 0;
                     for (FutureTask<?> task : futureTaskList) {
                         if (task.isDone()) {

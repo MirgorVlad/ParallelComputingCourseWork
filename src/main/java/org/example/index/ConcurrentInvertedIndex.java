@@ -1,5 +1,6 @@
 package org.example.index;
 
+import lombok.Getter;
 import org.example.entity.Document;
 import org.example.threadpool.CustomThreadPool;
 
@@ -15,6 +16,8 @@ public class ConcurrentInvertedIndex {
     private final int THREAD_COUNT = 1;
     private final InvertedIndex invertedIndex;
     private final CustomThreadPool customThreadPool;
+    @Getter
+    private  List<FutureTask<?>> futureTaskList;
 
     private FutureTask<?> time;
 
@@ -24,7 +27,7 @@ public class ConcurrentInvertedIndex {
     }
 
 
-    public List<FutureTask<?>> buildIndex(List<Document> documentList) {
+    public void buildIndex(List<Document> documentList) {
         List<FutureTask<?>> futureTaskList = new ArrayList<>();
         int step = documentList.size() / THREAD_COUNT;
         for (int i = 0; i < THREAD_COUNT; i++) {
@@ -32,8 +35,8 @@ public class ConcurrentInvertedIndex {
                     : documentList.subList(i * step, (i + 1) * step);
             futureTaskList.add(customThreadPool.execute(() -> invertedIndex.buildIndex(docList)));
         }
+        this.futureTaskList = futureTaskList;
         countTime(futureTaskList);
-        return futureTaskList;
     }
 
     private void countTime(List<FutureTask<?>> futureTaskList) {

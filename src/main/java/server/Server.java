@@ -1,4 +1,7 @@
 package server;
+import org.example.index.ConcurrentInvertedIndex;
+import org.example.index.InvertedIndex;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,6 +11,7 @@ import java.net.Socket;
 public class Server {
     public static void main(String[] args) throws IOException {
         ServerSocket ss = new ServerSocket(5056);
+        ConcurrentInvertedIndex concurrentInvertedIndex = new ConcurrentInvertedIndex();
         //taskProcessingThread.start();
         while (true) {
             Socket s = null;
@@ -24,7 +28,7 @@ public class Server {
                 System.out.println("Assigning new thread for this client");
 
                 // create a new thread object
-                Thread t = new ClientThread(s, dis, dos);
+                Thread t = new ClientThread(s, dis, dos, concurrentInvertedIndex);
 
                 // Invoking the start() method
                 t.start();
