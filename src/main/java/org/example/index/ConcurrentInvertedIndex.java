@@ -13,11 +13,12 @@ import java.util.concurrent.FutureTask;
 
 public class ConcurrentInvertedIndex {
 
-    private final int THREAD_COUNT = 1;
+    private final int THREAD_COUNT = 4;
     private final InvertedIndex invertedIndex;
     private final CustomThreadPool customThreadPool;
     @Getter
     private  List<FutureTask<?>> futureTaskList;
+    public   List<Document> documentList;
 
     private FutureTask<?> time;
 
@@ -28,20 +29,22 @@ public class ConcurrentInvertedIndex {
 
 
     public void buildIndex(List<Document> documentList) {
+        this.documentList = documentList;
+        long start = System.currentTimeMillis();
         List<FutureTask<?>> futureTaskList = new ArrayList<>();
         int step = documentList.size() / THREAD_COUNT;
         for (int i = 0; i < THREAD_COUNT; i++) {
-            List<Document> docList = i == THREAD_COUNT - 1 ? documentList.subList(i * step, documentList.size())
-                    : documentList.subList(i * step, (i + 1) * step);
-            futureTaskList.add(customThreadPool.execute(() -> invertedIndex.buildIndex(docList)));
+            int st = i*step;
+            int end = (i + 1) * step;
+            futureTaskList.add(customThreadPool.execute(() -> invertedIndex.buildIndex(documentList, st, end)));
         }
         this.futureTaskList = futureTaskList;
-        countTime(futureTaskList);
+        countTime(futureTaskList, start);
     }
 
-    private void countTime(List<FutureTask<?>> futureTaskList) {
+    private void countTime(List<FutureTask<?>> futureTaskList, long start) {
         time = new FutureTask<>(() -> {
-            long start = System.currentTimeMillis();
+//            long start = System.currentTimeMillis();
             System.out.println(start);
             futureTaskList.forEach(t -> {
                 try {
@@ -62,7 +65,7 @@ public class ConcurrentInvertedIndex {
         return (String) time.get();
     }
 
-    public Map<String, Set<Integer>> searchQuery(String query) {
+    public Map<String, Set<String>> searchQuery(String query) {
         return invertedIndex.searchQuery(query);
     }
 

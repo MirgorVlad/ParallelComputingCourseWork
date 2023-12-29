@@ -8,11 +8,12 @@ import java.util.*;
 @Data
 public class InvertedIndex {
     private final Random random = new Random();
-    private Map<String, Set<Integer>> indexMap = new HashMap<>();
+    private Map<String, Set<String>> indexMap = new HashMap<>();
     private final Object object = new Object();
 
-    public boolean buildIndex(List<Document> documentList) {
-        for (Document document : documentList) {
+    public boolean buildIndex(List<Document> documentList, int start, int end) {
+        for (int i = start; i < end; i++) {
+            Document document = documentList.get(i);
             String content = document.getContent();
             for (String word : content.split("\\s+")) {
                 synchronized (object) {
@@ -23,10 +24,10 @@ public class InvertedIndex {
         return true;
     }
 
-    public Map<String, Set<Integer>> searchQuery(String query) {
-        Map<String, Set<Integer>> map = new HashMap<>();
+    public Map<String, Set<String>> searchQuery(String query) {
+        Map<String, Set<String>> map = new HashMap<>();
         for (String word : query.split("\\s+")) {
-            Set<Integer> index = indexMap.get(word);
+            Set<String> index = indexMap.get(word);
             map.put(word, Objects.requireNonNullElseGet(index, HashSet::new));
         }
         return map;

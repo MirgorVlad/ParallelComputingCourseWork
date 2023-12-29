@@ -17,7 +17,7 @@ public class DocUtil {
         int count = 0;
         List<Document> contentList = new ArrayList<>();
         File file = new File(folderPath);
-        int i = 0;
+        //int i = 0;
         for (File dir : file.listFiles()) {
             for (File filePath : dir.listFiles()) {
                 Path path = Paths.get(filePath.getAbsolutePath());
@@ -25,7 +25,7 @@ public class DocUtil {
                 try {
                     List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
                     String content = String.join("\n", lines);
-                    contentList.add(new Document(++i, content));
+                    contentList.add(new Document(filePath.getName(), content));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

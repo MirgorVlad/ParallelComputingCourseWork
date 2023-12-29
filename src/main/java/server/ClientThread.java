@@ -55,7 +55,7 @@ class ClientThread extends Thread {
                 } else if (received.equals("search")) {
                     String query = dis.readUTF();
                     System.out.println("Query: " + query);
-                    Map<String, Set<Integer>> stringSetMap = concurrentInvertedIndex.searchQuery(query);
+                    Map<String, Set<String>> stringSetMap = concurrentInvertedIndex.searchQuery(query);
                     dos.writeUTF(stringSetMap.toString());
                 } else if (received.equals("time")) {
                     String time = concurrentInvertedIndex.getTime();
