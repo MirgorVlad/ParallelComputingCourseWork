@@ -1,6 +1,7 @@
 package org.example.index;
 
 import lombok.Data;
+import org.example.map.CustomConcurrentHashMap;
 import org.example.entity.Document;
 
 import java.util.*;
@@ -8,7 +9,7 @@ import java.util.*;
 @Data
 public class InvertedIndex {
     private final Random random = new Random();
-    private Map<String, Set<String>> indexMap = new HashMap<>();
+    private CustomConcurrentHashMap<String, Set<String>> indexMap = new CustomConcurrentHashMap<>();
     private final Object object = new Object();
 
     public boolean buildIndex(List<Document> documentList, int start, int end) {
@@ -16,9 +17,12 @@ public class InvertedIndex {
             Document document = documentList.get(i);
             String content = document.getContent();
             for (String word : content.split("\\s+")) {
-                synchronized (object) {
-                    indexMap.computeIfAbsent(word, k -> new HashSet<>()).add(document.getId());
+                Set<String> strings = indexMap.get(word);
+                if(strings == null) {
+                    strings = new HashSet<>();
                 }
+                strings.add(document.getId());
+                indexMap.put(word, strings);
             }
         }
         return true;

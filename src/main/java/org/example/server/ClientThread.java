@@ -1,4 +1,4 @@
-package server;
+package org.example.server;
 
 import org.example.index.ConcurrentInvertedIndex;
 import org.example.util.DocUtil;

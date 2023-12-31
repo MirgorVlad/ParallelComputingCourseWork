@@ -1,6 +1,5 @@
-package server;
+package org.example.server;
 import org.example.index.ConcurrentInvertedIndex;
-import org.example.index.InvertedIndex;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
