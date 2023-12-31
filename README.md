@@ -1,7 +1,7 @@
 # Project Name: Client-Server Inverted index application
 
 ## Overview
-This project is implementation of my course fork for Parallel Computing. I have developed inverted concurrent inverted index data structure with client-server functionality.
+This project is implementation of my course fork for Parallel Computing. I have developed concurrent inverted index data structure with client-server functionality.
 
 ## Prerequisites
 - Java JDK 11 or higher
@@ -33,19 +33,18 @@ This project is implementation of my course fork for Parallel Computing. I have 
 
 #Application protocol 
 
-Client -> Server: establishing a connection
-Server->Client: connection success message
-Server->Client: request for command input (UTF-8)
-Client->Server: ‘build {path to directory}’ command (build index from
-documents in directory)
-Server->Client: 1 byte status message (1 – success, 0 - error)
-Client->Server: ‘status’ command (return result of execution in %)
-Server->Client: Long message (percent status of execution)
-Client->Server: search {search string} command (get search string)
-Server->Client: UTF data (result of search in inverted index)
-Client->Server: time command
-Server->Client: Long data (time of index building in ms)
-Client->Server: ‘exit’ command (close connection)
+- Client -> Server: establishing a connection 
+- Server->Client: connection success message
+- Server->Client: request for command input (UTF-8)
+- Client->Server: ‘build {path to directory}’ command (build index from  documents in directory)
+- Server->Client: 1 byte status message (1 – success, 0 - error)
+- Client->Server: ‘status’ command (return result of execution in %)
+- Server->Client: Long message (percent status of execution)
+- Client->Server: search {search string} command (get search string)
+- Server->Client: UTF data (result of search in inverted index)
+- Client->Server: time command
+- Server->Client: Long data (time of index building in ms)
+- Client->Server: ‘exit’ command (close connection)
 
 
 ## Dependencies
