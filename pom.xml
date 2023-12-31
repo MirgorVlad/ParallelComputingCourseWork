@@ -38,6 +38,8 @@
         <configuration>
           <source>9</source>
           <target>9</target>
+          <mainClass>server/Server.java</mainClass>
+          <mainClass>server/Client.java</mainClass>
         </configuration>
       </plugin>
     </plugins>
